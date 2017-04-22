@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviour
 
     void die()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().loadCurrentLevel();
     }
 
     void handleMovements()
