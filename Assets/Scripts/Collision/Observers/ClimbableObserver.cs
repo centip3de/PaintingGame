@@ -15,12 +15,16 @@ namespace AssemblyCSharp
 
 		public void onCollisionEnter(PlayerManager player) {
 			player.isClimbing = true;
-			Physics2D.gravity = Vector2.zero;
+
+			Rigidbody2D body = GameObject.FindWithTag ("Player").GetComponent<Rigidbody2D> ();
+			body.gravityScale = 0;
 		}
 
 		public void onCollisionExit(PlayerManager player) {
 			player.isClimbing = false;
-			Physics2D.gravity = player.gravity;
+
+			Rigidbody2D body = GameObject.FindWithTag ("Player").GetComponent<Rigidbody2D> ();
+			body.gravityScale = 1;
 		}
 	}
 }

@@ -6,17 +6,17 @@ using AssemblyCSharp;
 
 public class PlayerManager : MonoBehaviour
 {
+	private const float DEFAULT_SPEED = 7f;
+
     public Transform playerTransform;
     public bool isGrounded;
-    public float speed = 1f;
+    public float speed = DEFAULT_SPEED;
     public bool dead;
     public Vector2 gravity;
     public GameObject noodle;
 
-    private bool spacePressed;
     public bool isClimbing;
     private bool actionEnabled;
-    private GameObject moving;
 	private CollisionManager collisionManager;
 
 	void Start ()
@@ -26,7 +26,6 @@ public class PlayerManager : MonoBehaviour
 			.build ();
 
         isClimbing = false;
-        spacePressed = false;
         gravity = Physics2D.gravity;
     }
 
@@ -41,16 +40,19 @@ public class PlayerManager : MonoBehaviour
     }
 
     void handleMovements()
-    {
+	{
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
+
+		speed = verticalSign != 0 || horizontalSign != 0
+			? DEFAULT_SPEED
+			: 0;
 
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
 		float scale = speed * Time.smoothDeltaTime;
 
 		playerTransform.Translate (displacement * scale);
-
-    }
+	}
 
     void launchNoodle()
     {
@@ -89,21 +91,11 @@ public class PlayerManager : MonoBehaviour
         else
         {
             this.actionEnabled = false;
-            this.moving = null;
         }
 
         if (Input.GetKey(KeyCode.F))
         {
             launchNoodle();
-        }
-
-        if(Input.GetKey(KeyCode.Space))
-        {
-            this.spacePressed = true;
-        }
-        else
-        {
-            this.spacePressed = false;
         }
     }
 
@@ -116,11 +108,6 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Moveable" && actionEnabled)
-        {
-            moving = coll.gameObject;
-        }
-
         if(coll.gameObject.tag == "Death")
         {
             die();
@@ -145,10 +132,6 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D coll)
     {
-        if(coll.gameObject.tag == "Moveable" && actionEnabled)
-        {
-            moving = coll.gameObject;
-        }
     }
 
     void OnCollisionExit2D(Collision2D coll)
@@ -156,7 +139,6 @@ public class PlayerManager : MonoBehaviour
         if(coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             this.actionEnabled = false;
-            this.moving = null;
         }
     }
 
