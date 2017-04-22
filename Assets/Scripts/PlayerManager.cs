@@ -6,11 +6,10 @@ using AssemblyCSharp;
 
 public class PlayerManager : MonoBehaviour
 {
-	private const float DEFAULT_SPEED = 7f;
+	private const float SPEED = 7f;
 
     public Transform playerTransform;
     public bool isGrounded;
-    public float speed = DEFAULT_SPEED;
     public bool dead;
     public Vector2 gravity;
     public GameObject noodle;
@@ -46,12 +45,8 @@ public class PlayerManager : MonoBehaviour
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
 
-		speed = verticalSign != 0 || horizontalSign != 0
-			? DEFAULT_SPEED
-			: 0;
-
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
-		float scale = speed * Time.smoothDeltaTime;
+		float scale = SPEED * Time.smoothDeltaTime;
 
 		playerTransform.Translate (displacement * scale);
 	}
