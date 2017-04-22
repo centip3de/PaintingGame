@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
     public bool dead;
     public Vector2 gravity;
     public GameObject noodle;
+    public GameObject stairs;
 
     private bool spacePressed;
     public bool isClimbing;
