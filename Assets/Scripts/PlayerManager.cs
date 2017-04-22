@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     public Vector2 velocity;
     public bool isGrounded;
     public float speed = 1f;
+    public bool dead;
 
     private bool actionEnabled;
     private GameObject moving;
@@ -16,6 +17,11 @@ public class PlayerManager : MonoBehaviour
     {
 	
 	}
+
+    public void kill()
+    {
+        print("Am ded.");
+    }
 
     void handleMovements()
     {
