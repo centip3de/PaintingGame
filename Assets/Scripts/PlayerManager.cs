@@ -110,7 +110,7 @@ public class PlayerManager : MonoBehaviour
             Destroy(activeStair);
         }
         
-        activeStair = Instantiate(stairs, new Vector3(transform.position.x + 3, transform.position.y + 2), Quaternion.identity);
+        activeStair = Instantiate(stairs, new Vector3(transform.position.x + 3, transform.position.y + 2), Quaternion.LookRotation(Vector3.zero, currentDirection));
     }
 
     void doFood() { }
