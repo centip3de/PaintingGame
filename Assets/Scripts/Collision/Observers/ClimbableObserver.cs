@@ -17,6 +17,8 @@ namespace AssemblyCSharp
 			player.isClimbing = true;
 
 			Rigidbody2D body = GameObject.FindWithTag ("Player").GetComponent<Rigidbody2D> ();
+
+			body.velocity = Vector2.zero;
 			body.gravityScale = 0;
 		}
 
