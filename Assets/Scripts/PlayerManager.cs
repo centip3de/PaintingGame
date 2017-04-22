@@ -47,14 +47,12 @@ public class PlayerManager : MonoBehaviour
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
 
-		speed = verticalSign != 0 || horizontalSign != 0
-			? DEFAULT_SPEED
-			: 0;
-
+        print("Player grav: " + this.gravity);
+        print("World grav: " + Physics2D.gravity);
+        
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
 		float scale = speed * Time.smoothDeltaTime;
-
-		playerTransform.Translate (displacement * scale);
+        playerTransform.Translate (displacement * scale);
 	}
 
     void launchNoodle()
