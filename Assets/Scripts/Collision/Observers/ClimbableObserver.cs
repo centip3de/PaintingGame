@@ -22,6 +22,9 @@ namespace AssemblyCSharp
 			body.gravityScale = 0;
 		}
 
+		public void onCollisionStay(PlayerManager player) {
+		}
+
 		public void onCollisionExit(PlayerManager player) {
 			player.isClimbing = false;
 
