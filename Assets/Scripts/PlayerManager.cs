@@ -18,9 +18,9 @@ public class PlayerManager : MonoBehaviour
 	
 	}
 
-    public void kill()
+    void die()
     {
-        print("Am ded.");
+        Application.LoadLevel(Application.loadedLevel);
     }
 
     void handleMovements()
@@ -39,7 +39,6 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             this.actionEnabled = true;
-            print("Set to true!");
         }
         else
         {
@@ -61,7 +60,10 @@ public class PlayerManager : MonoBehaviour
         if (coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             moving = coll.gameObject;
-            print("Moving!");
+        }
+        if(coll.gameObject.tag == "Death")
+        {
+            die();
         }
     }
 
@@ -71,7 +73,6 @@ public class PlayerManager : MonoBehaviour
         if(coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             moving = coll.gameObject;
-            print("Moving!");
         }
     }
 }
