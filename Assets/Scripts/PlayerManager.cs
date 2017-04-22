@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using AssemblyCSharp;
 
+public enum Actions
+{
+    NOODLE,
+    STAIR,
+    FOOD // ... ?
+}
+
 public class PlayerManager : MonoBehaviour
 {
 	private const float SPEED = 7f;
@@ -14,13 +21,17 @@ public class PlayerManager : MonoBehaviour
     public Vector2 gravity;
     public GameObject noodle;
     public GameObject stairs;
+    public Vector2 currentDirection;
+    public Actions selectedAction;
 
     public bool isClimbing;
     private bool actionEnabled;
 	private CollisionManager collisionManager;
     private GameObject activeNoodle;
+    private GameObject activeStair;
 
-	void Start ()
+
+    void Start ()
     {
 		collisionManager = CollisionManager.builder (this)
 			.add (new ClimbableObserver())
@@ -29,6 +40,8 @@ public class PlayerManager : MonoBehaviour
         isClimbing = false;
         gravity = Physics2D.gravity;
         activeNoodle = null;
+        activeStair = null;
+        currentDirection = Vector2.zero;
     }
 
     void nextLevel()
@@ -45,7 +58,12 @@ public class PlayerManager : MonoBehaviour
 	{
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
-       
+
+        if (horizontalSign != 0.0)
+        {
+            currentDirection.x = horizontalSign;
+        }
+
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
 		float scale = SPEED * Time.smoothDeltaTime;
 
@@ -85,6 +103,44 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    void spawnStair()
+    {
+        if(activeStair != null)
+        {
+            Destroy(activeStair);
+        }
+
+        // Spawn it near the player, taking orientation into account.
+
+        Vector3 pos = new Vector3(transform.position.x + (3 * currentDirection.x), transform.position.y + 1);
+        print(pos);
+
+        // We have to rotate around the Z axis, because fuck logic.
+        Vector3 lookDirection = new Vector3(0, 0, currentDirection.x);
+
+        activeStair = Instantiate(stairs, pos, transform.rotation);
+    }
+
+    void doFood() { }
+
+    void handleAction()
+    {
+        switch(selectedAction)
+        {
+            case Actions.NOODLE:
+                launchNoodle();
+                break;
+            case Actions.STAIR:
+                spawnStair();
+                break;
+            case Actions.FOOD:
+                doFood();
+                break;
+            default:
+                break;       
+        }
+    }
+
 
     void handleKeys()
     {
@@ -99,7 +155,7 @@ public class PlayerManager : MonoBehaviour
 
         if (Input.GetKey(KeyCode.F))
         {
-            launchNoodle();
+            handleAction();
         }
     }
 
