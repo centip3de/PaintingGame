@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     public bool dead;
     public Vector2 gravity;
     public GameObject noodle;
+    public GameObject stairs;
 
     public bool isClimbing;
     private bool actionEnabled;
@@ -44,7 +45,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
-
+       
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
 		float scale = SPEED * Time.smoothDeltaTime;
 
