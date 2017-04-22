@@ -61,7 +61,7 @@ public class PlayerManager : MonoBehaviour
 
         if (horizontalSign != 0.0)
         {
-            currentDirection = new Vector2(horizontalSign, 0);
+            currentDirection.x = horizontalSign;
         }
 
 		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
@@ -109,8 +109,16 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(activeStair);
         }
-        
-        activeStair = Instantiate(stairs, new Vector3(transform.position.x + 3, transform.position.y + 2), Quaternion.LookRotation(Vector3.zero, currentDirection));
+
+        // Spawn it near the player, taking orientation into account.
+
+        Vector3 pos = new Vector3(transform.position.x + (3 * currentDirection.x), transform.position.y + 1);
+        print(pos);
+
+        // We have to rotate around the Z axis, because fuck logic.
+        Vector3 lookDirection = new Vector3(0, 0, currentDirection.x);
+
+        activeStair = Instantiate(stairs, pos, transform.rotation);
     }
 
     void doFood() { }
