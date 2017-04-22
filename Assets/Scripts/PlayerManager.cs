@@ -5,18 +5,22 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public Transform playerTransform;
-    public Vector2 velocity;
     public bool isGrounded;
     public float speed = 1f;
     public bool dead;
+    public Vector2 gravity;
 
+    private bool spacePressed;
+    private bool isClimbing;
     private bool actionEnabled;
     private GameObject moving;
 
 	void Start ()
     {
-	
-	}
+        isClimbing = false;
+        spacePressed = false;
+        gravity = Physics.gravity;
+    }
 
     void nextLevel()
     {
@@ -32,7 +36,19 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 up = (playerTransform.up * Input.GetAxisRaw("Vertical"));
         Vector2 right = playerTransform.right * Input.GetAxisRaw("Horizontal");
-        playerTransform.Translate((up + right).normalized * speed * Time.deltaTime);
+        if(!isClimbing)
+        {
+            playerTransform.Translate((up + right).normalized * speed * Time.deltaTime);
+        }
+        else
+        {
+            // Gravity begins to act weird when we try to re-climb.
+            // Solution is maybe just give the player one chance to climb?
+            print("Climbing! Gravity: " + Physics2D.gravity);
+            Physics2D.gravity = Vector2.zero;
+            playerTransform.Translate(playerTransform.up * speed * Time.deltaTime);
+        }
+
         if (moving != null)
         {
             moving.transform.Translate((up + right).normalized * speed * Time.deltaTime);
@@ -50,6 +66,14 @@ public class PlayerManager : MonoBehaviour
             this.actionEnabled = false;
             this.moving = null;
         }
+        if(Input.GetKey(KeyCode.Space))
+        {
+            this.spacePressed = true;
+        }
+        else
+        {
+            this.spacePressed = false;
+        }
     }
 	
 	void Update ()
@@ -61,7 +85,6 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        print(actionEnabled);
         if (coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             moving = coll.gameObject;
@@ -80,10 +103,45 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D coll)
     {
-        print(actionEnabled);
         if(coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             moving = coll.gameObject;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if(coll.gameObject.tag == "Climbable" && spacePressed)
+        {
+            print("HERE");
+            this.isClimbing = true;
+        }
+        else
+        {
+            this.isClimbing = false;
+            Physics2D.gravity = this.gravity;
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D coll)
+    {
+        if(coll.gameObject.tag == "Climbable" && spacePressed)
+        {
+            this.isClimbing = true;
+        }
+        else
+        {
+            this.isClimbing = false;
+            Physics2D.gravity = this.gravity;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D coll)
+    {
+        if(coll.gameObject.tag == "Climbale")
+        {
+            this.isClimbing = false;
+            Physics2D.gravity = this.gravity;
         }
     }
 }
