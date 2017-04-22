@@ -170,17 +170,13 @@ public class PlayerManager : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-		string tagName = coll.gameObject.tag.ToUpper ();
-		CollisionType type = (CollisionType) Enum.Parse (typeof(CollisionType), tagName);
-
-		collisionManager.enterNotify (type);
+		string tagName = coll.gameObject.tag;
+		collisionManager.enterNotify (tagName);
     }
 
     void OnTriggerExit2D(Collider2D coll)
     {
-		string tagName = coll.gameObject.tag.ToUpper ();
-		CollisionType type = (CollisionType) Enum.Parse (typeof(CollisionType), tagName);
-
-		collisionManager.exitNotify (type);
+		string tagName = coll.gameObject.tag;
+		collisionManager.exitNotify (tagName);
     }
 }

@@ -36,7 +36,12 @@ namespace AssemblyCSharp
 			return new Builder(player);
 		}
 
-		public void enterNotify(CollisionType type) {
+		public void enterNotify(String tagName) {
+			CollisionType? type = parse (tagName);
+			if (type == null) {
+				return;
+			}
+
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
 					observer.onCollisionEnter(player);
@@ -44,12 +49,25 @@ namespace AssemblyCSharp
 			});
 		}
 
-		public void exitNotify(CollisionType type) {
+		public void exitNotify(String tagName) {
+			CollisionType? type = parse (tagName);
+			if (type == null) {
+				return;
+			}
+
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
 					observer.onCollisionExit(player);
 				}
 			});
+		}
+
+		protected static CollisionType? parse(String tagName) {
+			try {
+				return (CollisionType) Enum.Parse (typeof(CollisionType), tagName.ToUpper());
+			} catch (ArgumentException) {
+				return null;
+			}
 		}
 	}
 }
