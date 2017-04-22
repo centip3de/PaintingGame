@@ -27,8 +27,8 @@ public class LevelManager : MonoBehaviour
 
     void loadTransitions()
     {
-        transitions.Add("Title", "Level1");
-        transitions.Add("Level1", "Level2");
+        transitions.Add("Title", "World Map");
+        transitions.Add("World Map", "Level2");
         transitions.Add("Level2", "Level3");
         transitions.Add("Level3", "Credits");
     }
