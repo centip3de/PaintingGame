@@ -38,19 +38,19 @@ public class PlayerManager : MonoBehaviour
         Vector2 right = playerTransform.right * Input.GetAxisRaw("Horizontal");
         if(!isClimbing)
         {
-            playerTransform.Translate((up + right).normalized * speed * Time.deltaTime);
+            playerTransform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
         }
         else
         {
             // Gravity begins to act weird when we try to re-climb.
             // Solution is maybe just give the player one chance to climb?
             Physics2D.gravity = Vector2.zero;
-            playerTransform.Translate(playerTransform.up * speed * Time.deltaTime);
+            playerTransform.Translate(playerTransform.up * speed * Time.smoothDeltaTime);
         }
 
         if (moving != null)
         {
-            moving.transform.Translate((up + right).normalized * speed * Time.deltaTime);
+            moving.transform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
         }
     }
 
@@ -76,8 +76,8 @@ public class PlayerManager : MonoBehaviour
             Physics2D.gravity = this.gravity;
         }
     }
-	
-	void Update ()
+
+	void FixedUpdate ()
     {
         handleKeys();
         handleMovements();
@@ -107,6 +107,15 @@ public class PlayerManager : MonoBehaviour
         if(coll.gameObject.tag == "Moveable" && actionEnabled)
         {
             moving = coll.gameObject;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D coll)
+    {
+        if(coll.gameObject.tag == "Moveable" && actionEnabled)
+        {
+            this.actionEnabled = false;
+            this.moving = null;
         }
     }
 
