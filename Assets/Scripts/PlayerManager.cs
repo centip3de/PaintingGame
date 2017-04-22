@@ -100,6 +100,17 @@ public class PlayerManager : MonoBehaviour
         {
             nextLevel();
         }
+
+        if(coll.gameObject.tag == "Item")
+        {
+            print("Collected an item.");
+            Destroy(coll.gameObject);
+        }
+
+        if(coll.gameObject.tag == "Teleport")
+        {
+            coll.gameObject.GetComponent<TeleportManager>().teleportToExit(this.gameObject);
+        }
     }
 
     void OnCollisionStay2D(Collision2D coll)
@@ -129,6 +140,11 @@ public class PlayerManager : MonoBehaviour
         {
             this.isClimbing = false;
             Physics2D.gravity = this.gravity;
+        }
+
+        if(coll.gameObject.tag == "Painting")
+        {
+            print("Collided with painting... Should probably teleport to the next stage, or something.");
         }
     }
 
