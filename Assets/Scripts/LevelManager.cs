@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public int deathCounter;
+    public Dictionary<string, string> transitions;
 
     public void Awake()
     {
@@ -16,6 +17,26 @@ public class LevelManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void Start()
+    {
+        transitions = new Dictionary<string, string>();
+        loadTransitions();
+    }
+
+    void loadTransitions()
+    {
+        transitions.Add("Title", "Level1");
+        transitions.Add("Level1", "Level2");
+        transitions.Add("Level2", "Level3");
+        transitions.Add("Level3", "Credits");
+    }
+
+    public void nextLevel()
+    {
+        string name = Application.loadedLevelName;
+        Application.LoadLevel(transitions[name]);
     }
 
     public void loadCurrentLevel()

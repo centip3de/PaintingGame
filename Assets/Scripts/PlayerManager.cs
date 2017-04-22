@@ -18,6 +18,11 @@ public class PlayerManager : MonoBehaviour
 	
 	}
 
+    void nextLevel()
+    {
+        GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel();
+    }
+
     void die()
     {
         GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().loadCurrentLevel();
@@ -61,9 +66,15 @@ public class PlayerManager : MonoBehaviour
         {
             moving = coll.gameObject;
         }
+
         if(coll.gameObject.tag == "Death")
         {
             die();
+        }
+
+        if(coll.gameObject.tag == "NextLevel")
+        {
+            nextLevel();
         }
     }
 
