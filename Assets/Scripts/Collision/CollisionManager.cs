@@ -57,7 +57,7 @@ namespace AssemblyCSharp
 
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
-					observer.onCollisionEnter(player);
+					observer.onCollisionExit(player);
 				}
 			});
 		}

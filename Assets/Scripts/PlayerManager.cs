@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour
 
         isClimbing = false;
         spacePressed = false;
-        gravity = Physics.gravity;
+        gravity = Physics2D.gravity;
     }
 
     void nextLevel()
@@ -50,27 +50,6 @@ public class PlayerManager : MonoBehaviour
 
 		playerTransform.Translate (displacement * scale);
 
-		/*
-		 * 
-        Vector2 up = (playerTransform.up * Input.GetAxisRaw("Vertical"));
-        Vector2 right = playerTransform.right * Input.GetAxisRaw("Horizontal");
-        if(!isClimbing)
-        {
-            playerTransform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
-        }
-        else
-        {
-            // Gravity begins to act weird when we try to re-climb.
-            // Solution is maybe just give the player one chance to climb?
-            // Physics2D.gravity = Vector2.zero;
-            playerTransform.Translate(playerTransform.up * speed * Time.smoothDeltaTime);
-        }
-*/
-
-        if (moving != null)
-        {
-            //moving.transform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
-        }
     }
 
     void launchNoodle()
@@ -185,34 +164,7 @@ public class PlayerManager : MonoBehaviour
     {
 		string tagName = coll.gameObject.tag;
 		collisionManager.enterNotify (tagName);
-        /*if(coll.gameObject.tag == "Climbable")
-        {
-            this.isClimbing = true;
-        }
-        else
-        {
-            this.isClimbing = false;
-            Physics2D.gravity = this.gravity;
-        }
-
-        if(coll.gameObject.tag == "Painting")
-        {
-            print("Collided with painting... Should probably teleport to the next stage, or something.");
-        }*/
     }
-
-    /*void OnTriggerStay2D(Collider2D coll)
-    {
-        if(coll.gameObject.tag == "Climbable" && spacePressed)
-        {
-            this.isClimbing = true;
-        }
-        else
-        {
-            this.isClimbing = false;
-            Physics2D.gravity = this.gravity;
-        }
-    }*/
 
     void OnTriggerExit2D(Collider2D coll)
     {
