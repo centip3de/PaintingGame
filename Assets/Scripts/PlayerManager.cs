@@ -36,7 +36,6 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 up = (playerTransform.up * Input.GetAxisRaw("Vertical"));
         Vector2 right = playerTransform.right * Input.GetAxisRaw("Horizontal");
-        print("Gravity: " + Physics2D.gravity + " isClimbing: " + isClimbing + " spacePressed: " + spacePressed);
         if(!isClimbing)
         {
             playerTransform.Translate((up + right).normalized * speed * Time.deltaTime);
@@ -45,7 +44,6 @@ public class PlayerManager : MonoBehaviour
         {
             // Gravity begins to act weird when we try to re-climb.
             // Solution is maybe just give the player one chance to climb?
-            print("Climbing!");
             Physics2D.gravity = Vector2.zero;
             playerTransform.Translate(playerTransform.up * speed * Time.deltaTime);
         }
@@ -116,7 +114,6 @@ public class PlayerManager : MonoBehaviour
     {
         if(coll.gameObject.tag == "Climbable" && spacePressed)
         {
-            print("HERE");
             this.isClimbing = true;
         }
         else
