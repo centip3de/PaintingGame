@@ -5,7 +5,7 @@ namespace AssemblyCSharp
 	public interface CollisionObserver
 	{
 		CollisionType type();
-		void onCollisionEnter();
-		void onCollisionExit();
+		void onCollisionEnter(PlayerManager player);
+		void onCollisionExit(PlayerManager player);
 	}
 }

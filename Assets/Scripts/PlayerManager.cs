@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AssemblyCSharp;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -11,12 +13,17 @@ public class PlayerManager : MonoBehaviour
     public Vector2 gravity;
 
     private bool spacePressed;
-    private bool isClimbing;
+    public bool isClimbing;
     private bool actionEnabled;
     private GameObject moving;
+	private CollisionManager collisionManager;
 
 	void Start ()
     {
+		collisionManager = CollisionManager.builder (this)
+			.add (new ClimbableObserver())
+			.build ();
+
         isClimbing = false;
         spacePressed = false;
         gravity = Physics.gravity;
@@ -34,6 +41,16 @@ public class PlayerManager : MonoBehaviour
 
     void handleMovements()
     {
+		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
+		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
+
+		Vector3 displacement = new Vector3 (horizontalSign, verticalSign, 0);
+		float scale = speed * Time.smoothDeltaTime;
+
+		playerTransform.Translate (displacement * scale);
+
+		/*
+		 * 
         Vector2 up = (playerTransform.up * Input.GetAxisRaw("Vertical"));
         Vector2 right = playerTransform.right * Input.GetAxisRaw("Horizontal");
         if(!isClimbing)
@@ -44,13 +61,14 @@ public class PlayerManager : MonoBehaviour
         {
             // Gravity begins to act weird when we try to re-climb.
             // Solution is maybe just give the player one chance to climb?
-            Physics2D.gravity = Vector2.zero;
+            // Physics2D.gravity = Vector2.zero;
             playerTransform.Translate(playerTransform.up * speed * Time.smoothDeltaTime);
         }
+*/
 
         if (moving != null)
         {
-            moving.transform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
+            //moving.transform.Translate((up + right).normalized * speed * Time.smoothDeltaTime);
         }
     }
 
@@ -72,8 +90,6 @@ public class PlayerManager : MonoBehaviour
         else
         {
             this.spacePressed = false;
-            this.isClimbing = false;
-            Physics2D.gravity = this.gravity;
         }
     }
 
@@ -132,7 +148,11 @@ public class PlayerManager : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if(coll.gameObject.tag == "Climbable" && spacePressed)
+		string tagName = coll.gameObject.tag.ToUpper ();
+		CollisionType type = (CollisionType) Enum.Parse (typeof(CollisionType), tagName);
+
+		collisionManager.enterNotify (type);
+        /*if(coll.gameObject.tag == "Climbable")
         {
             this.isClimbing = true;
         }
@@ -145,10 +165,10 @@ public class PlayerManager : MonoBehaviour
         if(coll.gameObject.tag == "Painting")
         {
             print("Collided with painting... Should probably teleport to the next stage, or something.");
-        }
+        }*/
     }
 
-    void OnTriggerStay2D(Collider2D coll)
+    /*void OnTriggerStay2D(Collider2D coll)
     {
         if(coll.gameObject.tag == "Climbable" && spacePressed)
         {
@@ -159,14 +179,13 @@ public class PlayerManager : MonoBehaviour
             this.isClimbing = false;
             Physics2D.gravity = this.gravity;
         }
-    }
+    }*/
 
     void OnTriggerExit2D(Collider2D coll)
     {
-        if(coll.gameObject.tag == "Climbale")
-        {
-            this.isClimbing = false;
-            Physics2D.gravity = this.gravity;
-        }
+		string tagName = coll.gameObject.tag.ToUpper ();
+		CollisionType type = (CollisionType) Enum.Parse (typeof(CollisionType), tagName);
+
+		collisionManager.exitNotify (type);
     }
 }

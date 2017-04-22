@@ -1,24 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AssemblyCSharp
 {
 	public class CollisionManager
 	{
+		private readonly PlayerManager player;
 		private readonly List<CollisionObserver> observers;
 
 		private CollisionManager(Builder builder)
 		{
+			player = builder.player;	
 			observers = builder.observers;
 		}
 
-		public static class Builder {
-			private const List<CollisionObserver> observers = new List<>();
+		public class Builder {
+			public readonly PlayerManager player;
+			public readonly List<CollisionObserver> observers = new List<CollisionObserver>();
 
-			private Builder() {
+			public Builder(PlayerManager player) {
+				this.player = player;
 			}
 
 			public Builder add(CollisionObserver observer) {
-				observers.add (observer);
+				observers.Add (observer);
 				return this;
 			}
 
@@ -27,14 +32,14 @@ namespace AssemblyCSharp
 			}
 		}
 
-		public static Builder builder() {
-			return new Builder();
+		public static Builder builder(PlayerManager player) {
+			return new Builder(player);
 		}
 
 		public void enterNotify(CollisionType type) {
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
-					observer.onCollisionEnter();
+					observer.onCollisionEnter(player);
 				}
 			});
 		}
@@ -42,7 +47,7 @@ namespace AssemblyCSharp
 		public void exitNotify(CollisionType type) {
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
-					observer.onCollisionEnter();
+					observer.onCollisionEnter(player);
 				}
 			});
 		}
