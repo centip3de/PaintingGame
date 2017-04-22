@@ -117,7 +117,6 @@ public class PlayerManager : MonoBehaviour
 
         // We have to rotate around the Z axis, because fuck logic.
         Vector3 lookDirection = new Vector3(0, 0, currentDirection.x);
-
         activeStair = Instantiate(stairs, pos, transform.rotation);
     }
 
@@ -156,6 +155,15 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKey(KeyCode.F))
         {
             handleAction();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            this.selectedAction = Actions.NOODLE;
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            this.selectedAction = Actions.STAIR;
         }
     }
 
