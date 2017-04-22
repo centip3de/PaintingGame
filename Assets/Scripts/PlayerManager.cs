@@ -58,7 +58,7 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 rayCastStart = new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 1);
         RaycastHit2D hit = Physics2D.Raycast(rayCastStart, Vector2.up);
-        if (hit.collider != null && hit.collider.gameObject != this.gameObject && hit.collider.tag != "Climbable")
+        if (hit.collider != null && hit.collider.gameObject != this.gameObject && hit.collider.tag == "Ground")
         {
             if(activeNoodle != null)
             {
