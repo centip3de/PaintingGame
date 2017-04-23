@@ -47,15 +47,21 @@
             : 'url(' + tiles[i - 1] + ')';
     }
 
+    function updateTileIdx(tile) {
+        return function() {
+            tile.dataset.idx = currentIdx;
+            updateTile(tile);
+        };
+    }
+
     function renderTile() {
         var tile = document.createElement('div');
 
         tile.className = 'tile';
         tile.dataset.idx = 0;
-        tile.addEventListener('click', function() {
-            tile.dataset.idx = currentIdx;
-            updateTile(tile);
-        });
+
+        tile.addEventListener('click', updateTileIdx(tile));
+        tile.addEventListener('mousedown', updateTileIdx(tile));
 
         updateTile(tile);
         return tile;
@@ -78,6 +84,11 @@
             var paletteTile = renderTile().cloneNode(true);
 
             paletteTile.dataset.idx = i;
+
+            paletteTile.addEventListener('dragstart', function(ev) {
+                ev.preventDefault();
+            });
+
             paletteTile.addEventListener('click', function(ev) {
                 var idx = parseInt(ev.target.dataset.idx, 10);
                 
