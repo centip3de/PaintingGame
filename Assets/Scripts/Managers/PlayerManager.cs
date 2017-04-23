@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
         activeNoodle = null;
         activeStair = null;
         currentDirection = Vector2.zero;
-        selectedAction = Actions.STAIR;
+        selectedAction = Actions.NOODLE;
         pauseMenuCanvas.enabled = false;
     }
 
@@ -226,7 +226,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
+				selectedToolImage.texture = Resources.Load ("NoodlesTool") as Texture;
                 this.selectedAction = Actions.NOODLE;
             }
 
