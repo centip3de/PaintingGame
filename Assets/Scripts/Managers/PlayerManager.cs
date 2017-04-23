@@ -218,6 +218,12 @@ public class PlayerManager : MonoBehaviour
 
 	void onKeyPress(object sender, KeyPressEvent ev) {
 		print (ev);
+
+		switch (ev.keyCode) {
+		case KeyCode.F:
+			handleAction ();
+			break;
+		}
 	}
 
     void handleKeys()
@@ -237,11 +243,6 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 this.actionEnabled = false;
-            }
-
-            if (Input.GetKey(KeyCode.F))
-            {
-                handleAction();
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
