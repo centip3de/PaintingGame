@@ -17,10 +17,10 @@
         </style>
     </head>
     <body>
-        <form>
-            <label for="bgcolor">Background color:</label>
-            <input type="text" id="bgcolor" name="bgcolor" value="#000" />
-        </form>
+        <label for="bgcolor">Background color:</label>
+        <input type="text" id="bgcolor" name="bgcolor" value="#000" />
+        <hr />
+        <div id="tool"></div>
         <hr />
         <div id="tilemap"></div>
     </body>
@@ -29,6 +29,7 @@
     var WIDTH = 20;
     var HEIGHT = 20;
     var bgcolor = '#000';
+    var currentIdx = 0;
 
     var tiles = [
         'Cobblestone.png',
@@ -52,19 +53,49 @@
         tile.className = 'tile';
         tile.dataset.idx = 0;
         tile.addEventListener('click', function() {
-            var idx = parseInt(tile.dataset.idx, 10);
-            var nextIdx = (idx + 1) % (tiles.length + 1);
-            
-            tile.dataset.idx = nextIdx;
+            tile.dataset.idx = currentIdx;
             updateTile(tile);
         });
 
         updateTile(tile);
-        el.appendChild(tile);
+        return tile;
     }
 
+    function renderTool() {
+        var tool = document.getElementById('tool');
+
+        var currentTile = renderTile();
+        currentTile.id = 'currentTile';
+
+        tool.appendChild(currentTile);
+
+        var palette = document.createElement('div');
+        palette.id = 'palette';
+
+        tool.appendChild(palette);
+
+        for (var i = 0; i < tiles.length + 1; ++i) {
+            var paletteTile = renderTile().cloneNode(true);
+
+            paletteTile.dataset.idx = i;
+            paletteTile.addEventListener('click', function(ev) {
+                var idx = parseInt(ev.target.dataset.idx, 10);
+                
+                currentTile.dataset.idx = idx;
+                currentIdx = idx;
+
+                updateTile(currentTile);
+            });
+
+            updateTile(paletteTile);
+
+            palette.appendChild(paletteTile);
+        }
+    }
+
+    renderTool();
     for (var i = 0; i < WIDTH * HEIGHT; ++i) {
-        renderTile();
+        el.appendChild(renderTile());
     }
 
     document.getElementById('bgcolor').addEventListener('change', function(ev) {
