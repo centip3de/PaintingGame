@@ -28,8 +28,7 @@ public class PlayerManager : MonoBehaviour
     public bool paused;
     public Vector2 currentDirection;
 
-
-    public Text selectedText;
+	public RawImage selectedToolImage;
     public Canvas pauseMenuCanvas;
 
 	private CollisionManager collisionManager;
@@ -51,9 +50,7 @@ public class PlayerManager : MonoBehaviour
         activeNoodle = null;
         activeStair = null;
         currentDirection = Vector2.zero;
-        selectedAction = Actions.NOODLE;
-
-        selectedText.text = "Currently Selected: Noodle";
+        selectedAction = Actions.STAIR;
         pauseMenuCanvas.enabled = false;
     }
 
@@ -229,19 +226,19 @@ public class PlayerManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                selectedText.text = "Currently Selected: Noodle";
+				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
                 this.selectedAction = Actions.NOODLE;
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                selectedText.text = "Currently Selected: Stairs";
+				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
                 this.selectedAction = Actions.STAIR;
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                selectedText.text = "Currently Selected: Umbrella";
+				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
                 this.selectedAction = Actions.UMBRELLA;
             }
         }
