@@ -31,3 +31,6 @@ sysinfo.txt
 
 # Builds
 *.apk
+
+# OS X
+.DS_Store
