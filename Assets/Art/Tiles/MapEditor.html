@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tileset mapper</title>
+        <meta charset="utf-8">
+        <style>
+#tilemap {
+    width: calc(32px * 20);
+    line-height: 0;
+}
+
+.tile {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+}
+        </style>
+    </head>
+    <body>
+        <form>
+            <label for="bgcolor">Background color:</label>
+            <input type="text" id="bgcolor" name="bgcolor" value="#000" />
+        </form>
+        <hr />
+        <div id="tilemap"></div>
+    </body>
+    <script>
+(function() {
+    var WIDTH = 20;
+    var HEIGHT = 20;
+    var bgcolor = '#000';
+
+    var tiles = [
+        'Cobblestone.png',
+        'Carpeted.png',
+        'Wood.png'
+    ];
+
+    var el = document.getElementById('tilemap');
+
+    function updateTile(tile) {
+        var i = parseInt(tile.dataset.idx, 10);
+
+        tile.style.background = i == 0
+            ? bgcolor
+            : 'url(' + tiles[i - 1] + ')';
+    }
+
+    function renderTile() {
+        var tile = document.createElement('div');
+
+        tile.className = 'tile';
+        tile.dataset.idx = 0;
+        tile.addEventListener('click', function() {
+            var idx = parseInt(tile.dataset.idx, 10);
+            var nextIdx = (idx + 1) % (tiles.length + 1);
+            
+            tile.dataset.idx = nextIdx;
+            updateTile(tile);
+        });
+
+        updateTile(tile);
+        el.appendChild(tile);
+    }
+
+    for (var i = 0; i < WIDTH * HEIGHT; ++i) {
+        renderTile();
+    }
+
+    document.getElementById('bgcolor').addEventListener('change', function(ev) {
+        bgcolor = ev.target.value;
+
+        var tiles = document.querySelectorAll('.tile');
+        Array.prototype.slice.call(tiles, 0).forEach(function(tile) {
+            if (tile.dataset.idx === '0') {
+                tile.style.background = bgcolor;
+            }
+        });
+    });
+})();
+    </script>
+</html>
