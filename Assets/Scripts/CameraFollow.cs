@@ -6,6 +6,7 @@ public class CameraFollow : MonoBehaviour {
 
     public Transform player;
     public Vector3 offset;
+    public bool paused;
 
     void Start()
     {
@@ -14,6 +15,19 @@ public class CameraFollow : MonoBehaviour {
 
     void Update()
     {
-        transform.position = player.transform.position + offset;
+        if (!paused)
+        {
+            transform.position = player.transform.position + offset;
+        }
+    }
+
+    void OnPauseGame()
+    {
+        paused = true;
+    }
+
+    void OnResumeGame()
+    {
+        paused = false;
     }
 }

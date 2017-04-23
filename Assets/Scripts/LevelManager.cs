@@ -39,6 +39,11 @@ public class LevelManager : MonoBehaviour
         Application.LoadLevel(transitions[name]);
     }
 
+    public void loadMainMenu()
+    {
+        Application.LoadLevel("Title");
+    }
+
     public void loadCurrentLevel()
     {
         deathCounter++;
