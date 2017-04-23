@@ -76,6 +76,12 @@ public class PlayerManager : MonoBehaviour
 		float scale = SPEED * Time.smoothDeltaTime;
 
 		playerTransform.Translate (displacement * scale);
+
+		SpriteRenderer renderer = GameObject.FindWithTag ("Player").GetComponent<SpriteRenderer> ();
+		if (horizontalSign != 0)
+		{
+			renderer.flipX = horizontalSign < 0;
+		}
 	}
 
     void launchNoodle()
