@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using AssemblyCSharp;
@@ -110,7 +108,6 @@ public class PlayerManager : MonoBehaviour
         }
         else if (hit.collider != null && hit.collider.tag == "Climbable")
         {
-            print("Hit another climbable, increasing their height.");
             GameObject obj = hit.collider.gameObject;
             Vector3 scale = obj.transform.localScale;
             scale.y += 0.01f;
@@ -118,10 +115,6 @@ public class PlayerManager : MonoBehaviour
 
             // Scaling is uniform, so we need to shift down each unit increased
             obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y - 0.03f);
-        }
-        else
-        {
-            print("I hit myself/or nothing! ... I think?");
         }
     }
 
