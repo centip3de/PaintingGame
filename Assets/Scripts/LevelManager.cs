@@ -45,4 +45,9 @@ public class LevelManager : MonoBehaviour
         print("Current amount of deaths: " + deathCounter.ToString());
         Application.LoadLevel(Application.loadedLevel);
     }
+
+    public void quitGame()
+    {
+        Application.Quit();
+    }
 }
