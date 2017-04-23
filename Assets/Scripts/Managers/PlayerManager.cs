@@ -103,7 +103,7 @@ public class PlayerManager : MonoBehaviour
                 Destroy(activeNoodle);
             }
 
-            GameObject newObj = Instantiate(noodle, hit.point, Quaternion.identity);
+            GameObject newObj = Instantiate(noodle, new Vector3(hit.point.x, hit.point.y, -1), Quaternion.identity);
             Vector3 scale = new Vector3(newObj.transform.localScale.x, 0.01f);
             newObj.transform.localScale = scale;
             activeNoodle = newObj;
@@ -134,8 +134,7 @@ public class PlayerManager : MonoBehaviour
 
         // Spawn it near the player, taking orientation into account.
 
-        Vector3 pos = new Vector3(transform.position.x + (3 * currentDirection.x), transform.position.y + 1);
-        print(pos);
+        Vector3 pos = new Vector3(transform.position.x + (3 * currentDirection.x), transform.position.y + 1, -1);
 
         // We have to rotate around the Z axis, because fuck logic.
         Vector3 lookDirection = new Vector3(0, 0, currentDirection.x);
