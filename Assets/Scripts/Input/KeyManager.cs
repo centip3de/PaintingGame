@@ -22,7 +22,9 @@ public class KeyManager : MonoBehaviour {
 					keyPressed (key);
 				}
 
-				stateMap[key] = nextState;
+				stateMap [key] = nextState;
+			} else {
+				stateMap [key] = KeyPressState.OFF;
 			}
 		}
 	}

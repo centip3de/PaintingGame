@@ -32,7 +32,6 @@ public class PlayerManager : MonoBehaviour
     public Text selectedText;
     public Canvas pauseMenuCanvas;
 
-    private bool actionEnabled;
 	private CollisionManager collisionManager;
     private GameObject activeNoodle;
     private GameObject activeStair;
@@ -210,6 +209,12 @@ public class PlayerManager : MonoBehaviour
 
 	void onKeyPress(object sender, KeyPressEvent ev) {
 		print (ev);
+
+		switch (ev.keyCode) {
+		case KeyCode.F:
+			handleAction ();
+			break;
+		}
 	}
 
     void handleKeys()
@@ -222,20 +227,6 @@ public class PlayerManager : MonoBehaviour
 
         if (!paused)
         {
-            if (Input.GetKey(KeyCode.E))
-            {
-                this.actionEnabled = true;
-            }
-            else
-            {
-                this.actionEnabled = false;
-            }
-
-            if (Input.GetKey(KeyCode.F))
-            {
-                handleAction();
-            }
-
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 selectedText.text = "Currently Selected: Noodle";
@@ -287,18 +278,6 @@ public class PlayerManager : MonoBehaviour
         if(coll.gameObject.tag == "Teleport")
         {
             coll.gameObject.GetComponent<TeleportManager>().teleportToExit(this.gameObject);
-        }
-    }
-
-    void OnCollisionStay2D(Collision2D coll)
-    {
-    }
-
-    void OnCollisionExit2D(Collision2D coll)
-    {
-        if(coll.gameObject.tag == "Moveable" && actionEnabled)
-        {
-            this.actionEnabled = false;
         }
     }
 
