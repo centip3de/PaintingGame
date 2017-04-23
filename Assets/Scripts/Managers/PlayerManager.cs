@@ -278,16 +278,16 @@ public class PlayerManager : MonoBehaviour
             print("Collected an item.");
             Destroy(coll.gameObject);
         }
-
-        if(coll.gameObject.tag == "Teleport")
-        {
-            coll.gameObject.GetComponent<TeleportManager>().teleportToExit(this.gameObject);
-        }
     }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-		string tagName = coll.gameObject.tag;
+        if (coll.gameObject.tag == "Teleport")
+        {
+            coll.gameObject.GetComponent<TeleportManager>().teleportToExit(this.gameObject);
+        }
+
+        string tagName = coll.gameObject.tag;
 		collisionManager.enterNotify (tagName);
     }
 
