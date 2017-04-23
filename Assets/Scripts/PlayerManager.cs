@@ -17,20 +17,22 @@ public class PlayerManager : MonoBehaviour
 	private const float SPEED = 7f;
 
     public Transform playerTransform;
-    public bool isGrounded;
-    public bool dead;
     public Vector2 gravity;
     public GameObject noodle;
     public GameObject stairs;
+    public bool paused;
     public Vector2 currentDirection;
     public Actions selectedAction;
+
     public Text selectedText;
+    public Canvas pauseMenuCanvas;
 
     public bool isClimbing;
     private bool actionEnabled;
 	private CollisionManager collisionManager;
     private GameObject activeNoodle;
     private GameObject activeStair;
+    private Vector3 velocity;
 
 
     void Start ()
@@ -45,7 +47,9 @@ public class PlayerManager : MonoBehaviour
         activeStair = null;
         currentDirection = Vector2.zero;
         selectedAction = Actions.NOODLE;
+
         selectedText.text = "Currently Selected: Noodle";
+        pauseMenuCanvas.enabled = false;
     }
 
     void nextLevel()
@@ -63,7 +67,7 @@ public class PlayerManager : MonoBehaviour
 		int verticalSign = Math.Sign (Input.GetAxisRaw ("Vertical"));
 		int horizontalSign = Math.Sign (Input.GetAxisRaw ("Horizontal"));
 
-        if (horizontalSign != 0.0)
+        if (horizontalSign != 0)
         {
             currentDirection.x = horizontalSign;
         }
@@ -147,46 +151,94 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    void OnPauseGame()
+    {
+        paused = true;
+        Rigidbody2D rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        this.velocity = rigidBody.velocity;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.gravityScale = 0;
+
+    }
+
+    void OnResumeGame()
+    {
+        paused = false;
+        Rigidbody2D rigidBody = gameObject.GetComponent<Rigidbody2D>();
+        rigidBody.velocity = this.velocity;
+        rigidBody.gravityScale = 1;
+    }
+
+    void pauseGame()
+    {
+        if (!paused)
+        {
+            GameObject[] objects = (GameObject[])FindObjectsOfType(typeof(GameObject));
+            foreach (GameObject go in objects)
+            {
+                go.SendMessage("OnPauseGame", SendMessageOptions.DontRequireReceiver);
+            }
+        } else {
+            GameObject[] objects = (GameObject[])FindObjectsOfType(typeof(GameObject));
+            foreach (GameObject go in objects)
+            {
+                go.SendMessage("OnResumeGame", SendMessageOptions.DontRequireReceiver);
+            }
+        }
+    }
+
 
     void handleKeys()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            this.actionEnabled = true;
-        }
-        else
-        {
-            this.actionEnabled = false;
+            pauseMenuCanvas.enabled = !pauseMenuCanvas.enabled;
+            pauseGame();
         }
 
-        if (Input.GetKey(KeyCode.F))
+        if (!paused)
         {
-            handleAction();
-        }
+            if (Input.GetKey(KeyCode.E))
+            {
+                this.actionEnabled = true;
+            }
+            else
+            {
+                this.actionEnabled = false;
+            }
 
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            selectedText.text = "Currently Selected: Noodle";
-            this.selectedAction = Actions.NOODLE;
-        }
+            if (Input.GetKey(KeyCode.F))
+            {
+                handleAction();
+            }
 
-        if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            selectedText.text = "Currently Selected: Stairs";
-            this.selectedAction = Actions.STAIR;
-        }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                selectedText.text = "Currently Selected: Noodle";
+                this.selectedAction = Actions.NOODLE;
+            }
 
-        if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            selectedText.text = "Currently Selected: Umbrella";
-            this.selectedAction = Actions.UMBRELLA;
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                selectedText.text = "Currently Selected: Stairs";
+                this.selectedAction = Actions.STAIR;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                selectedText.text = "Currently Selected: Umbrella";
+                this.selectedAction = Actions.UMBRELLA;
+            }
         }
     }
 
 	void FixedUpdate ()
     {
         handleKeys();
-        handleMovements();
+        if (!paused)
+        {
+            handleMovements();
+        }
     }
 
 
