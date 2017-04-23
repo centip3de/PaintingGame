@@ -8,14 +8,27 @@ body {
     background: #000;
 }
 
-#platform {
-    background: url(Cobblestone.png) repeat;
-    height: 64px;
+#container {
     width: calc(32px * 10);
+}
+
+#platform {
+    height: 32px;
+    width: 100%;
+    background: url(Carpeted.png) repeat;
+}
+
+#underneath {
+    height: 64px;
+    width: 100%;
+    background: url(Wood.png) repeat;
 }
     </style>
 </head>
 <body>
-    <div id="platform"></div>
+    <div id="container">
+        <div id="platform"></div>
+        <div id="underneath"></div>
+    </div>
 </body>
 </html>
