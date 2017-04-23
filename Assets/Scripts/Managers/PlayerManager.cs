@@ -40,13 +40,14 @@ public class PlayerManager : MonoBehaviour
     private GameObject activeStair;
     private GameObject activeUmbrella;
 
-
-
     void Start ()
     {
 		collisionManager = CollisionManager.builder (this)
 			.add (new ClimbableObserver())
 			.build ();
+
+		KeyManager keyManager = GameObject.FindWithTag ("KeyManager").GetComponent<KeyManager> ();
+		keyManager.onKeyPress += onKeyPress;
 
         isClimbing = false;
         gravity = Physics2D.gravity;
@@ -215,6 +216,9 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+	void onKeyPress(object sender, KeyPressEvent ev) {
+		print (ev);
+	}
 
     void handleKeys()
     {
