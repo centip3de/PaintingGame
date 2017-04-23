@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using AssemblyCSharp;
 
 public enum Actions
 {
     NOODLE,
     STAIR,
-    FOOD // ... ?
+    UMBRELLA
 }
 
 public class PlayerManager : MonoBehaviour
@@ -23,6 +24,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject stairs;
     public Vector2 currentDirection;
     public Actions selectedAction;
+    public Text selectedText;
 
     public bool isClimbing;
     private bool actionEnabled;
@@ -42,6 +44,8 @@ public class PlayerManager : MonoBehaviour
         activeNoodle = null;
         activeStair = null;
         currentDirection = Vector2.zero;
+        selectedAction = Actions.NOODLE;
+        selectedText.text = "Currently Selected: Noodle";
     }
 
     void nextLevel()
@@ -120,7 +124,10 @@ public class PlayerManager : MonoBehaviour
         activeStair = Instantiate(stairs, pos, transform.rotation);
     }
 
-    void doFood() { }
+    void handleUmbrella()
+    {
+        
+    }
 
     void handleAction()
     {
@@ -132,8 +139,8 @@ public class PlayerManager : MonoBehaviour
             case Actions.STAIR:
                 spawnStair();
                 break;
-            case Actions.FOOD:
-                doFood();
+            case Actions.UMBRELLA:
+                handleUmbrella();
                 break;
             default:
                 break;       
@@ -159,11 +166,20 @@ public class PlayerManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
+            selectedText.text = "Currently Selected: Noodle";
             this.selectedAction = Actions.NOODLE;
         }
+
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
+            selectedText.text = "Currently Selected: Stairs";
             this.selectedAction = Actions.STAIR;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedText.text = "Currently Selected: Umbrella";
+            this.selectedAction = Actions.UMBRELLA;
         }
     }
 
