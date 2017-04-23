@@ -245,7 +245,7 @@ public class PlayerManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
+				selectedToolImage.texture = Resources.Load ("UmbrellaTool") as Texture;
                 this.selectedAction = Actions.UMBRELLA;
             }
         }
