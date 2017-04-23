@@ -153,7 +153,7 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            Vector3 pos = new Vector3(transform.position.x + 1, transform.position.y + 1);
+            Vector3 pos = new Vector3(transform.position.x + 1, transform.position.y + 1, -1);
             // Instantiate it as a child to the player so it stays attached.
             activeUmbrella = Instantiate(umbrella, pos, Quaternion.identity, playerTransform);
             playerRigidbody.gravityScale = 0.5f;
@@ -162,6 +162,7 @@ public class PlayerManager : MonoBehaviour
 
     void handleAction()
     {
+        playerRigidbody.gravityScale = 1;
         switch(selectedAction)
         {
             case Actions.NOODLE:
