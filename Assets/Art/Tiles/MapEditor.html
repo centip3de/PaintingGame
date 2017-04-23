@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <style>
 #tilemap {
-    width: calc(32px * 20);
+    width: calc(32px * 100);
     line-height: 0;
 }
 
@@ -26,15 +26,38 @@
     </body>
     <script>
 (function() {
-    var WIDTH = 20;
-    var HEIGHT = 20;
+    var WIDTH = 100;
+    var HEIGHT = 30;
     var bgcolor = '#000';
     var currentIdx = 0;
 
     var tiles = [
-        'Cobblestone.png',
-        'Carpeted.png',
-        'Wood.png'
+        'World/Cobblestone.png',
+        'World/Carpeted.png',
+        'World/Wood.png',
+		'Escher/ColumnEnd.png',
+		'Escher/ColumnMiddle.png',
+		'Escher/Floor.png',
+		'Escher/StairsContinuation.png',
+		'Escher/StairsStart.png',
+		'Escher/ColumnBot.png',
+		'Escher/ColumnBotLeft.png',
+		'Escher/ColumnBotRight.png',
+		'Escher/ColumnMiddleLeft.png',
+		'Escher/ColumnMiddleRight.png',
+		'Escher/ColumnEndLeft.png',
+		'Escher/ColumnEndRight.png',
+		'Escher/FloorLeft.png',
+		'Paintbrush.png',
+		'PaintbrushRight.png',
+		'PaintbrushLeft.png',
+		'PaintbrushBot.png',
+		'Escher/StairsMiddle.png',
+		'Escher/StairsBottom.png',
+		'Escher/StairsCorner.png',
+		'Escher/StairsRight.png',
+		'Escher/StairsOther.png',
+		'Escher/StairsFinal.png'
     ];
 
     var el = document.getElementById('tilemap');
