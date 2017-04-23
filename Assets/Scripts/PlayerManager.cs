@@ -15,24 +15,31 @@ public enum Actions
 public class PlayerManager : MonoBehaviour
 {
 	private const float SPEED = 7f;
+    private Vector3 velocity;
 
-    public Transform playerTransform;
-    public Vector2 gravity;
+    public GameObject umbrella;
     public GameObject noodle;
     public GameObject stairs;
+    public Actions selectedAction;
+
+    public Transform playerTransform;
+    public Rigidbody2D playerRigidbody;
+    public Vector2 gravity;
+    public bool isClimbing;
+
     public bool paused;
     public Vector2 currentDirection;
-    public Actions selectedAction;
+
 
     public Text selectedText;
     public Canvas pauseMenuCanvas;
 
-    public bool isClimbing;
     private bool actionEnabled;
 	private CollisionManager collisionManager;
     private GameObject activeNoodle;
     private GameObject activeStair;
-    private Vector3 velocity;
+    private GameObject activeUmbrella;
+
 
 
     void Start ()
@@ -134,9 +141,23 @@ public class PlayerManager : MonoBehaviour
         activeStair = Instantiate(stairs, pos, transform.rotation);
     }
 
-    void handleUmbrella()
+    void spawnUmbrella()
     {
-        
+        // One "click" opens the umbrella, another "closes" it.
+        // FIXME: Because we're doing GetKey, rather than GetKeyDown (or whatever), this is being called multiple times.
+        // That's fine for all the others, but has weird behavior for this one. 
+        if (activeUmbrella != null)
+        {
+            Destroy(activeUmbrella);
+            playerRigidbody.gravityScale = 1.0f;
+        }
+        else
+        {
+            Vector3 pos = new Vector3(transform.position.x + 1, transform.position.y + 1);
+            // Instantiate it as a child to the player so it stays attached.
+            activeUmbrella = Instantiate(umbrella, pos, Quaternion.identity, playerTransform);
+            playerRigidbody.gravityScale = 0.5f;
+        }
     }
 
     void handleAction()
@@ -150,7 +171,7 @@ public class PlayerManager : MonoBehaviour
                 spawnStair();
                 break;
             case Actions.UMBRELLA:
-                handleUmbrella();
+                spawnUmbrella();
                 break;
             default:
                 break;       
