@@ -5,19 +5,14 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour {
 
     public Transform player;
-    public Vector3 offset;
     public bool paused;
 
-    void Start()
-    {
-        offset = transform.position - player.transform.position;
-    }
-
-    void Update()
+    void LateUpdate()
     {
         if (!paused)
         {
-            transform.position = player.transform.position + offset;
+            Vector3 pos = new Vector3(player.transform.position.x, player.transform.position.y, -10);
+            transform.position = pos;
         }
     }
 
