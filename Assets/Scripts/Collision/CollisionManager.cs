@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AssemblyCSharp
 {
@@ -36,7 +37,7 @@ namespace AssemblyCSharp
 			return new Builder(player);
 		}
 
-		public void enterNotify(String tagName) {
+		public void enterNotify(String tagName, Collider2D coll) {
 			CollisionType? type = parse (tagName);
 			if (type == null) {
 				return;
@@ -44,12 +45,12 @@ namespace AssemblyCSharp
 
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
-					observer.onCollisionEnter(player);
+					observer.onCollisionEnter(player, coll);
 				}
 			});
 		}
 
-		public void exitNotify(String tagName) {
+		public void exitNotify(String tagName, Collider2D coll) {
 			CollisionType? type = parse (tagName);
 			if (type == null) {
 				return;
@@ -57,7 +58,7 @@ namespace AssemblyCSharp
 
 			observers.ForEach (delegate(CollisionObserver observer) {
 				if (observer.type().Equals(type)) {
-					observer.onCollisionExit(player);
+					observer.onCollisionExit(player, coll);
 				}
 			});
 		}

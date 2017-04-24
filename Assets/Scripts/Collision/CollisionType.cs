@@ -4,6 +4,7 @@ namespace AssemblyCSharp
 {
 	public enum CollisionType
 	{
-		CLIMBABLE
+		CLIMBABLE,
+		PAINTING
 	}
 }

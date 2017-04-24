@@ -33,10 +33,16 @@ public class LevelManager : MonoBehaviour
         transitions.Add("Level3", "Credits");
     }
 
-    public void nextLevel()
+	public void nextLevel(string levelName) {
+		Application.LoadLevel (levelName);
+	}
+
+	public void nextLevel()
     {
         string name = Application.loadedLevelName;
-        Application.LoadLevel(transitions[name]);
+		string levelName = transitions [name];
+
+		nextLevel (levelName);
     }
 
     public void loadMainMenu()

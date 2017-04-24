@@ -15,7 +15,7 @@ namespace AssemblyCSharp
 			return CollisionType.CLIMBABLE;
 		}
 
-		public void onCollisionEnter(PlayerManager player) {
+		public void onCollisionEnter(PlayerManager player, Collider2D coll) {
 			player.isClimbing = true;
 
 			Rigidbody2D body = GameObject.FindWithTag ("Player").GetComponent<Rigidbody2D> ();
@@ -25,10 +25,10 @@ namespace AssemblyCSharp
 			body.gravityScale = 0;
 		}
 
-		public void onCollisionStay(PlayerManager player) {
+		public void onCollisionStay(PlayerManager player, Collider2D coll) {
 		}
 
-		public void onCollisionExit(PlayerManager player) {
+		public void onCollisionExit(PlayerManager player, Collider2D coll) {
 			player.isClimbing = false;
 
 			Rigidbody2D body = GameObject.FindWithTag ("Player").GetComponent<Rigidbody2D> ();

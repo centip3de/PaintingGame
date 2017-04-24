@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour
     {
 		collisionManager = CollisionManager.builder (this)
 			.add (new ClimbableObserver())
+			.add (new PaintingObserver())
 			.build ();
 
 		KeyManager keyManager = GameObject.FindWithTag ("KeyManager").GetComponent<KeyManager> ();
@@ -59,6 +60,10 @@ public class PlayerManager : MonoBehaviour
     {
         GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel();
     }
+
+	void nextLevel(string name) {
+		GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel(name);
+	}
 
     void die()
     {
@@ -206,16 +211,12 @@ public class PlayerManager : MonoBehaviour
     }
 
 	void onKeyDown(object sender, KeyDownEvent ev) {
-		print (ev);
-
 		if (ev.keyCode == KeyCode.F && selectedAction == Actions.NOODLE) {
 			handleAction ();
 		}
 	}
 
 	void onKeyPress(object sender, KeyPressEvent ev) {
-		print (ev);
-
 		if (ev.keyCode == KeyCode.F && selectedAction != Actions.NOODLE) {
 			handleAction ();
 		}
@@ -268,11 +269,6 @@ public class PlayerManager : MonoBehaviour
             die();
         }
 
-        if(coll.gameObject.tag == "NextLevel")
-        {
-            nextLevel();
-        }
-
         if(coll.gameObject.tag == "Item")
         {
             print("Collected an item.");
@@ -288,12 +284,12 @@ public class PlayerManager : MonoBehaviour
         }
 
         string tagName = coll.gameObject.tag;
-		collisionManager.enterNotify (tagName);
+		collisionManager.enterNotify (tagName, coll);
     }
 
     void OnTriggerExit2D(Collider2D coll)
     {
 		string tagName = coll.gameObject.tag;
-		collisionManager.exitNotify (tagName);
+		collisionManager.exitNotify (tagName, coll);
     }
 }
