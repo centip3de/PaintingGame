@@ -28,7 +28,6 @@
 (function() {
     var WIDTH = 100;
     var HEIGHT = 30;
-    var bgcolor = '#000';
     var currentIdx = 0;
 
     var tiles = [
@@ -60,7 +59,9 @@
 		'Escher/StairsFinal.png',
 		'Escher/BowlOfFruit.png',
 		'Escher/Door.png',
-		'Escher/Portal.png'
+		'Escher/Portal.png',
+		'Warhol/SoupTop.png',
+		'Warhol/SoupBase.png'
     ];
 
     var el = document.getElementById('tilemap');
@@ -69,7 +70,7 @@
         var i = parseInt(tile.dataset.idx, 10);
 
         tile.style.background = i == 0
-            ? bgcolor
+            ? ''
             : 'url(' + tiles[i - 1] + ')';
     }
 
@@ -136,15 +137,9 @@
     }
 
     document.getElementById('bgcolor').addEventListener('change', function(ev) {
-        bgcolor = ev.target.value;
-
-        var tiles = document.querySelectorAll('.tile');
-        Array.prototype.slice.call(tiles, 0).forEach(function(tile) {
-            if (tile.dataset.idx === '0') {
-                tile.style.background = bgcolor;
-            }
-        });
+	el.style.background = ev.target.value;
     });
+    el.style.background = '#000';
 })();
     </script>
 </html>
