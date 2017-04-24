@@ -32,6 +32,9 @@ public class PlayerManager : MonoBehaviour
 	public RawImage selectedToolImage;
     public Canvas pauseMenuCanvas;
 
+    public Canvas notificationCanvas;
+    public Text notificationText;
+
 	private CollisionManager collisionManager;
     private LevelManager levelManager;
     private GameObject activeNoodle;
@@ -58,6 +61,7 @@ public class PlayerManager : MonoBehaviour
         currentDirection = Vector2.zero;
         selectedAction = levelManager.getAllowedAction(levelManager.getCurrentLevel());
         pauseMenuCanvas.enabled = false;
+        notificationCanvas.enabled = false;
 		selectedToolImage.texture.filterMode = FilterMode.Point;
     }
 
@@ -238,6 +242,11 @@ public class PlayerManager : MonoBehaviour
             pauseGame();
         }
 
+        if(Input.GetKeyDown(KeyCode.E) && notificationCanvas.enabled)
+        {
+            notificationCanvas.enabled = false;
+        }
+
         if (!paused)
         {
             if (this.selectedAction == Actions.NOODLE)
@@ -281,9 +290,28 @@ public class PlayerManager : MonoBehaviour
             die();
         }
 
-        if(coll.gameObject.tag == "Item")
+        if (coll.gameObject.tag == "Item")
         {
             itemPickedUp = true;
+            notificationCanvas.enabled = true;
+            string currentLevel = levelManager.getCurrentLevel();
+            if (currentLevel == "Warhol")
+            {
+                notificationText.text += "You've unlocked the noodle!\nHold F to create\nand grow a noodle that\nyou can climb on!";
+            }
+            else if (currentLevel == "Monet")
+            {
+                notificationText.text += "You've unlocked the umbrella!\nPress F to open/close\nthe umbrella and reduce gravity's\n pull on you!";
+            }
+            else if(currentLevel == "Escher")
+            {
+                notificationText.text = "You've unlocked the stairs!\nPress F to spawn stairs that you\ncan climb on!";
+            }
+            else
+            {
+                notificationText.text = "You broke the game, congrats!";
+            }
+            
             Destroy(coll.gameObject);
         }
     }
