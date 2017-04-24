@@ -111,7 +111,7 @@ public class PlayerManager : MonoBehaviour
             obj.transform.localScale = scale;
 
             // Scaling is uniform, so we need to shift down each unit increased
-            obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y - 0.03f);
+            obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y - 0.03f, -1);
         }
     }
 
