@@ -1,36 +1,99 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>tileset mapper</title>
-        <meta charset="utf-8">
+        <meta charset="utf-8" />
+        <title>map editor v2</title>
         <style>
-#tilemap {
-    width: calc(32px * 100);
-    line-height: 0;
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
-.tile {
+body {
+    margin-left: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#settingsForm, #tileTool {
+    vertical-align: top;
+    display: inline-block;
+    margin-right: 100px;
+}
+
+#currentTile {
+    display: inline-block;
     width: 32px;
     height: 32px;
+    border: 2px solid red;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+fieldset {
+    border: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+fieldset > label {
     display: inline-block;
+    min-width: 150px;
+}
+
+#clear {
+    margin-right: 10px;
+}
+
+#palette {
+    display: inline-block;
+    max-width: calc(32px * 15);
+    line-height: 0;
+    border: 1px solid #000;
+}
+
+#canvas {
+    cursor: pointer;
+    border: 1px solid #000;
+    box-sizing: border-box;
 }
         </style>
     </head>
     <body>
-        <label for="bgcolor">Background color:</label>
-        <input type="text" id="bgcolor" name="bgcolor" value="#000" />
+        <div id="ui">
+            <form id="settingsForm" onSubmit="return false">
+                <h2>Map settings</h2>
+                <fieldset>
+                    <label for="bgcolor">Background color:</label>
+                    <input type="text" name="bgcolor" id="bgcolor" value="#000000" />
+                </fieldset>
+                <fieldset>
+                    <label for="mapwidth">Width (tiles):</label>
+                    <input type="text" name="mapwidth" id="mapwidth" value="10" />
+                </fieldset>
+                <fieldset>
+                    <label for="mapheight">Height (tiles):</label>
+                    <input type="text" name="mapheight" id="mapheight" value="10" />
+                </fieldset>
+                <a href="#" id="clear">Clear</a>
+                <a href="#" id="save" download="map.png">Save to PNG</a>
+            </form>
+            <div id="tileTool">
+                <h2>Tile set</h2>
+                <img src="" id="currentTile" />
+                <div id="palette"></div>
+            </div>
+        </hr>
         <hr />
-        <div id="tool"></div>
-        <hr />
-        <div id="tilemap"></div>
+        <canvas id="canvas"></canvas>
     </body>
     <script>
 (function() {
-    var WIDTH = 100;
-    var HEIGHT = 30;
-    var currentIdx = 0;
+    var TILE_SIZE = 32;
 
-    var tiles = [
+    // available tile set (palette)
+    var tileSet = [
         'World/Cobblestone.png',
         'World/Carpeted.png',
         'World/Wood.png',
@@ -74,82 +137,139 @@
 		'Monet/WaterBubbles.png'
     ];
 
-    var el = document.getElementById('tilemap');
+    // configurable settings
+    var bgcolor = '#000000';
+    var mapwidth = 10;
+    var mapheight = 10;
 
-    function updateTile(tile) {
-        var i = parseInt(tile.dataset.idx, 10);
+    // dom elements
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var currentTile = document.getElementById('currentTile');
 
-        tile.style.background = i == 0
-            ? ''
-            : 'url(' + tiles[i - 1] + ')';
-    }
+    // initialize the palette
+    tileSet.forEach(function(tile) {
+        var palette = document.getElementById('palette');
+        var titleImage = new Image();
 
-    function updateTileIdx(tile) {
-        return function() {
-            tile.dataset.idx = currentIdx;
-            updateTile(tile);
+        titleImage.src = tile;
+        titleImage.width = TILE_SIZE;
+        titleImage.height = TILE_SIZE;
+        titleImage.style.cursor = 'pointer';
+
+        titleImage.addEventListener('click', function() {
+            currentTile.src = tile;
+        });
+
+        palette.appendChild(titleImage);
+    });
+
+    // event listeners for configurable settings
+    document.getElementById('bgcolor').addEventListener('change', function(ev) {
+        bgcolor = ev.target.value;
+        draw();
+    })
+
+    document.getElementById('mapwidth').addEventListener('change', function(ev) {
+        try {
+            mapwidth = parseInt(ev.target.value, 10);
+            resize();
+        } catch(e) {}
+    });
+
+    document.getElementById('mapheight').addEventListener('change', function(ev) {
+        try {
+            mapheight = parseInt(ev.target.value, 10);
+            resize();
+        } catch(e) {}
+    });
+
+    document.getElementById('save').addEventListener('click', function(ev) {
+        ev.preventDefault();
+
+        window.location.href = canvas.toDataURL('image/png');
+    });
+
+    function relativeCoordinates(ev) {
+        var boundingBox = ev.target.getBoundingClientRect();
+        
+        var mouseX = ev.clientX - boundingBox.left;
+        var mouseY = ev.clientY - boundingBox.top;
+
+        var x = Math.floor(mouseX / TILE_SIZE) * TILE_SIZE;
+        var y = Math.floor(mouseY / TILE_SIZE) * TILE_SIZE;
+
+        return {
+            x: x,
+            y: y
         };
     }
 
-    function renderTile() {
-        var tile = document.createElement('div');
+    // left click (place tile)
+    var holdingMouse = false;
+    var events = [];
 
-        tile.className = 'tile';
-        tile.dataset.idx = 0;
-
-        tile.addEventListener('click', updateTileIdx(tile));
-        tile.addEventListener('mousedown', updateTileIdx(tile));
-
-        updateTile(tile);
-        return tile;
+    function setHolding(state) {
+        return function() {
+            holdingMouse = state;
+        };
     }
 
-    function renderTool() {
-        var tool = document.getElementById('tool');
+    function placeTile(ev) {
+        ev.preventDefault();
 
-        var currentTile = renderTile();
-        currentTile.id = 'currentTile';
+        if (holdingMouse) {
+            var coords = relativeCoordinates(ev);
+            var sel = '[src="' + currentTile.getAttribute('src') + '"]:not(#currentTile)';
 
-        tool.appendChild(currentTile);
-
-        var palette = document.createElement('div');
-        palette.id = 'palette';
-
-        tool.appendChild(palette);
-
-        for (var i = 0; i < tiles.length + 1; ++i) {
-            var paletteTile = renderTile().cloneNode(true);
-
-            paletteTile.dataset.idx = i;
-
-            paletteTile.addEventListener('dragstart', function(ev) {
-                ev.preventDefault();
+            events.push({
+                src: document.querySelector(sel),
+                x: coords.x,
+                y: coords.y
             });
 
-            paletteTile.addEventListener('click', function(ev) {
-                var idx = parseInt(ev.target.dataset.idx, 10);
-                
-                currentTile.dataset.idx = idx;
-                currentIdx = idx;
-
-                updateTile(currentTile);
-            });
-
-            updateTile(paletteTile);
-
-            palette.appendChild(paletteTile);
+            context.fillRect(coords.x, coords.y, TILE_SIZE, TILE_SIZE);
+            context.drawImage(currentTile, coords.x, coords.y);
         }
     }
 
-    renderTool();
-    for (var i = 0; i < WIDTH * HEIGHT; ++i) {
-        el.appendChild(renderTile());
+    canvas.addEventListener('mousemove', placeTile);
+    canvas.addEventListener('mousedown', setHolding(true));
+    canvas.addEventListener('mouseup', setHolding(false));
+    canvas.addEventListener('mouseout', setHolding(false));
+
+    // right click (undo)
+    window.oncontextmenu = function(ev) {
+        ev.preventDefault();
+
+        if (ev.target == canvas) {
+            var coords = relativeCoordinates(ev);
+
+            context.fillStyle = bgcolor;
+            context.fillRect(coords.x, coords.y, TILE_SIZE, TILE_SIZE);
+
+            events.pop();
+        }
+    };
+
+    // canvas operations
+    function resize() {
+        canvas.width = mapwidth * TILE_SIZE;
+        canvas.height = mapheight * TILE_SIZE;
+
+        draw();
     }
 
-    document.getElementById('bgcolor').addEventListener('change', function(ev) {
-	el.style.background = ev.target.value;
-    });
-    el.style.background = '#000';
+    function draw() {
+        context.fillStyle = bgcolor;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        
+        events.forEach(function(event) {
+            context.drawImage(event.src, event.x, event.y);
+        });
+    }
+
+    resize();
 })();
     </script>
 </html>
