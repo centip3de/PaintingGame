@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
 {
 	private const float SPEED = 7f;
     private Vector3 velocity;
+    private bool itemPickedUp;
 
     public GameObject umbrella;
     public GameObject noodle;
@@ -32,6 +33,7 @@ public class PlayerManager : MonoBehaviour
     public Canvas pauseMenuCanvas;
 
 	private CollisionManager collisionManager;
+    private LevelManager levelManager;
     private GameObject activeNoodle;
     private GameObject activeStair;
     private GameObject activeUmbrella;
@@ -47,23 +49,25 @@ public class PlayerManager : MonoBehaviour
 		keyManager.onKeyDown += onKeyDown;
 		keyManager.onKeyPress += onKeyPress;
 
+        levelManager = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
+
         isClimbing = false;
         gravity = Physics2D.gravity;
         activeNoodle = null;
         activeStair = null;
         currentDirection = Vector2.zero;
-        selectedAction = Actions.NOODLE;
+        selectedAction = levelManager.getAllowedAction(levelManager.getCurrentLevel());
         pauseMenuCanvas.enabled = false;
 		selectedToolImage.texture.filterMode = FilterMode.Point;
     }
 
     void nextLevel()
     {
-        GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel();
+        levelManager.nextLevel();
     }
 
 	void nextLevel(string name) {
-		GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel(name);
+		levelManager.nextLevel(name);
 	}
 
     void die()
@@ -159,19 +163,22 @@ public class PlayerManager : MonoBehaviour
     void handleAction()
     {
         playerRigidbody.gravityScale = 1;
-        switch(selectedAction)
+        if (itemPickedUp)
         {
-            case Actions.NOODLE:
-                launchNoodle();
-                break;
-            case Actions.STAIR:
-                spawnStair();
-                break;
-            case Actions.UMBRELLA:
-                spawnUmbrella();
-                break;
-            default:
-                break;       
+            switch (selectedAction)
+            {
+                case Actions.NOODLE:
+                    launchNoodle();
+                    break;
+                case Actions.STAIR:
+                    spawnStair();
+                    break;
+                case Actions.UMBRELLA:
+                    spawnUmbrella();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -233,28 +240,22 @@ public class PlayerManager : MonoBehaviour
 
         if (!paused)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (this.selectedAction == Actions.NOODLE)
             {
 				selectedToolImage.texture = Resources.Load ("NoodlesTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.NOODLE;
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (this.selectedAction == Actions.STAIR)
             {
 				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.STAIR;
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha3))
+            if (this.selectedAction == Actions.UMBRELLA)
             {
 				selectedToolImage.texture = Resources.Load ("UmbrellaTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.UMBRELLA;
             }
         }
     }
@@ -282,7 +283,7 @@ public class PlayerManager : MonoBehaviour
 
         if(coll.gameObject.tag == "Item")
         {
-            print("Collected an item.");
+            itemPickedUp = true;
             Destroy(coll.gameObject);
         }
     }

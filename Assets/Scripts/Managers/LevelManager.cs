@@ -6,6 +6,8 @@ public class LevelManager : MonoBehaviour
 {
     public int deathCounter;
     public Dictionary<string, string> transitions;
+    public string currentStage;
+    public List<string> playedStages;
 
     public void Awake()
     {
@@ -23,6 +25,33 @@ public class LevelManager : MonoBehaviour
     {
         transitions = new Dictionary<string, string>();
         loadTransitions();
+        playedStages = new List<string>();
+    }
+
+    public string getCurrentLevel()
+    {
+        return Application.loadedLevelName;
+    }
+
+    public List<string> getPlayedStages()
+    {
+        return playedStages;
+    }
+
+    public Actions getAllowedAction(string stageName)
+    {
+        if (stageName == "Escher")
+        {
+            return Actions.STAIR;
+        }
+        else if (stageName == "Warhol")
+        {
+            return Actions.NOODLE;
+        }
+        else
+        {
+            return Actions.UMBRELLA;
+        }
     }
 
     void loadTransitions()
@@ -34,6 +63,7 @@ public class LevelManager : MonoBehaviour
     }
 
 	public void nextLevel(string levelName) {
+        playedStages.Add(levelName);
 		Application.LoadLevel (levelName);
 	}
 

@@ -10,7 +10,12 @@ namespace AssemblyCSharp {
 
 		public void onCollisionEnter(PlayerManager player, Collider2D coll) {
 			string paintingName = coll.gameObject.name.Replace(" Painting Physic", "");
-			GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel(paintingName);
+            LevelManager levelManager = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
+            if (!levelManager.getPlayedStages().Contains(paintingName))
+            {
+                levelManager.nextLevel(paintingName);
+            }
+			
 		}
 
 		public void onCollisionStay(PlayerManager player, Collider2D coll) {
