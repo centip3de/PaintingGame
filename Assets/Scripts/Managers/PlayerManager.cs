@@ -43,6 +43,7 @@ public class PlayerManager : MonoBehaviour
 			.build ();
 
 		KeyManager keyManager = GameObject.FindWithTag ("KeyManager").GetComponent<KeyManager> ();
+		keyManager.onKeyDown += onKeyDown;
 		keyManager.onKeyPress += onKeyPress;
 
         isClimbing = false;
@@ -204,13 +205,19 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+	void onKeyDown(object sender, KeyDownEvent ev) {
+		print (ev);
+
+		if (ev.keyCode == KeyCode.F && selectedAction == Actions.NOODLE) {
+			handleAction ();
+		}
+	}
+
 	void onKeyPress(object sender, KeyPressEvent ev) {
 		print (ev);
 
-		switch (ev.keyCode) {
-		case KeyCode.F:
+		if (ev.keyCode == KeyCode.F && selectedAction != Actions.NOODLE) {
 			handleAction ();
-			break;
 		}
 	}
 
@@ -238,7 +245,7 @@ public class PlayerManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
+				selectedToolImage.texture = Resources.Load ("UmbrellaTool") as Texture;
                 this.selectedAction = Actions.UMBRELLA;
             }
         }
