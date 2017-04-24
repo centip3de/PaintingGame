@@ -54,6 +54,7 @@ public class PlayerManager : MonoBehaviour
         currentDirection = Vector2.zero;
         selectedAction = Actions.NOODLE;
         pauseMenuCanvas.enabled = false;
+		selectedToolImage.texture.filterMode = FilterMode.Point;
     }
 
     void nextLevel()
@@ -235,18 +236,24 @@ public class PlayerManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
 				selectedToolImage.texture = Resources.Load ("NoodlesTool") as Texture;
+				selectedToolImage.texture.filterMode = FilterMode.Point;
+
                 this.selectedAction = Actions.NOODLE;
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
 				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
+				selectedToolImage.texture.filterMode = FilterMode.Point;
+
                 this.selectedAction = Actions.STAIR;
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {
 				selectedToolImage.texture = Resources.Load ("UmbrellaTool") as Texture;
+				selectedToolImage.texture.filterMode = FilterMode.Point;
+
                 this.selectedAction = Actions.UMBRELLA;
             }
         }
