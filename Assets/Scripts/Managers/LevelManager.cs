@@ -12,13 +12,6 @@ public class LevelManager : MonoBehaviour
     public void Awake()
     {
         DontDestroyOnLoad(this);
-
-        // FIXME: This is a shitty workaround. In fact there may be no fixing for this.
-        // Screw you Unity, for having to either choose an object with no state or duplicate objects.
-        if (FindObjectsOfType(GetType()).Length > 1)
-        {
-            Destroy(gameObject);
-        }
     }
 
     public void Start()
@@ -89,6 +82,7 @@ public class LevelManager : MonoBehaviour
 
     public void quitGame()
     {
+        print("Quitting game. Bye-bye!");
         Application.Quit();
     }
 }
