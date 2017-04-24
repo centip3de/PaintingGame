@@ -28,8 +28,8 @@ public class LevelManager : MonoBehaviour
     void loadTransitions()
     {
         transitions.Add("Title", "World Map");
-        transitions.Add("World Map", "Warhol");
-        transitions.Add("Warhol", "Escher");
+        transitions.Add("Monet", "World Map");
+        transitions.Add("Warhol", "World Map");
         transitions.Add("Escher", "Credits");
     }
 
