@@ -63,6 +63,19 @@ public class PlayerManager : MonoBehaviour
         pauseMenuCanvas.enabled = false;
         notificationCanvas.enabled = false;
 		selectedToolImage.texture.filterMode = FilterMode.Point;
+
+        var playedStages = levelManager.getPlayedStages();
+
+        if (playedStages.Count == 1 && playedStages[0] == "World Map")
+        {
+            notificationCanvas.enabled = true;
+            notificationText.text = "\"Hm, I wonder what those paintings\nare...\"";
+        }
+        if(playedStages.Count == 2 && levelManager.deathCounter == 0)
+        {
+            notificationCanvas.enabled = true;
+            notificationText.text = "\"Whoa! I've been teleported inside\nthe painting!\"";
+        }
     }
 
     void nextLevel()
@@ -297,15 +310,15 @@ public class PlayerManager : MonoBehaviour
             string currentLevel = levelManager.getCurrentLevel();
             if (currentLevel == "Warhol")
             {
-                notificationText.text += "You've unlocked the noodle!\nHold F to create\nand grow a noodle that\nyou can climb on!";
+                notificationText.text = "You've unlocked the noodle!\n\nHold F to create\nand grow a noodle that\nyou can climb on!";
             }
             else if (currentLevel == "Monet")
             {
-                notificationText.text += "You've unlocked the umbrella!\nPress F to open/close\nthe umbrella and reduce gravity's\n pull on you!";
+                notificationText.text = "You've unlocked the umbrella!\n\nPress F to open/close\nthe umbrella and reduce gravity's\n pull on you!";
             }
             else if(currentLevel == "Escher")
             {
-                notificationText.text = "You've unlocked the stairs!\nPress F to spawn stairs that you\ncan climb on!";
+                notificationText.text = "You've unlocked the stairs!\n\nPress F to spawn stairs that you\ncan climb on!";
             }
             else
             {
