@@ -264,6 +264,10 @@ public class PlayerManager : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D coll)
     {
+        if(coll.gameObject.tag == "NextLevel")
+        {
+            nextLevel();
+        }
         if(coll.gameObject.tag == "Death")
         {
             die();
