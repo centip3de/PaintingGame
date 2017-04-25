@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
 {
 	private const float SPEED = 7f;
     private Vector3 velocity;
+    private bool itemPickedUp;
 
     public GameObject umbrella;
     public GameObject noodle;
@@ -31,7 +32,11 @@ public class PlayerManager : MonoBehaviour
 	public RawImage selectedToolImage;
     public Canvas pauseMenuCanvas;
 
+    public Canvas notificationCanvas;
+    public Text notificationText;
+
 	private CollisionManager collisionManager;
+    private LevelManager levelManager;
     private GameObject activeNoodle;
     private GameObject activeStair;
     private GameObject activeUmbrella;
@@ -47,23 +52,39 @@ public class PlayerManager : MonoBehaviour
 		keyManager.onKeyDown += onKeyDown;
 		keyManager.onKeyPress += onKeyPress;
 
+        levelManager = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
+
         isClimbing = false;
         gravity = Physics2D.gravity;
         activeNoodle = null;
         activeStair = null;
         currentDirection = Vector2.zero;
-        selectedAction = Actions.NOODLE;
+        selectedAction = levelManager.getAllowedAction(levelManager.getCurrentLevel());
         pauseMenuCanvas.enabled = false;
+        notificationCanvas.enabled = false;
 		selectedToolImage.texture.filterMode = FilterMode.Point;
+
+        var playedStages = levelManager.getPlayedStages();
+
+        if (playedStages.Count == 1 && playedStages[0] == "World Map")
+        {
+            notificationCanvas.enabled = true;
+            notificationText.text = "\"Hm, I wonder what those paintings\nare...\"";
+        }
+        if(playedStages.Count == 2 && levelManager.deathCounter == 0)
+        {
+            notificationCanvas.enabled = true;
+            notificationText.text = "\"Whoa! I've been teleported inside\nthe painting!\"";
+        }
     }
 
     void nextLevel()
     {
-        GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel();
+        levelManager.nextLevel();
     }
 
 	void nextLevel(string name) {
-		GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>().nextLevel(name);
+		levelManager.nextLevel(name);
 	}
 
     void die()
@@ -159,19 +180,22 @@ public class PlayerManager : MonoBehaviour
     void handleAction()
     {
         playerRigidbody.gravityScale = 1;
-        switch(selectedAction)
+        if (itemPickedUp)
         {
-            case Actions.NOODLE:
-                launchNoodle();
-                break;
-            case Actions.STAIR:
-                spawnStair();
-                break;
-            case Actions.UMBRELLA:
-                spawnUmbrella();
-                break;
-            default:
-                break;       
+            switch (selectedAction)
+            {
+                case Actions.NOODLE:
+                    launchNoodle();
+                    break;
+                case Actions.STAIR:
+                    spawnStair();
+                    break;
+                case Actions.UMBRELLA:
+                    spawnUmbrella();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -231,30 +255,29 @@ public class PlayerManager : MonoBehaviour
             pauseGame();
         }
 
+        if(Input.GetKeyDown(KeyCode.E) && notificationCanvas.enabled)
+        {
+            notificationCanvas.enabled = false;
+        }
+
         if (!paused)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (this.selectedAction == Actions.NOODLE)
             {
 				selectedToolImage.texture = Resources.Load ("NoodlesTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.NOODLE;
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (this.selectedAction == Actions.STAIR)
             {
 				selectedToolImage.texture = Resources.Load ("StairsTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.STAIR;
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha3))
+            if (this.selectedAction == Actions.UMBRELLA)
             {
 				selectedToolImage.texture = Resources.Load ("UmbrellaTool") as Texture;
 				selectedToolImage.texture.filterMode = FilterMode.Point;
-
-                this.selectedAction = Actions.UMBRELLA;
             }
         }
     }
@@ -280,9 +303,28 @@ public class PlayerManager : MonoBehaviour
             die();
         }
 
-        if(coll.gameObject.tag == "Item")
+        if (coll.gameObject.tag == "Item")
         {
-            print("Collected an item.");
+            itemPickedUp = true;
+            notificationCanvas.enabled = true;
+            string currentLevel = levelManager.getCurrentLevel();
+            if (currentLevel == "Warhol")
+            {
+                notificationText.text = "You've unlocked the noodle!\n\nHold F to create\nand grow a noodle that\nyou can climb on!";
+            }
+            else if (currentLevel == "Monet")
+            {
+                notificationText.text = "You've unlocked the umbrella!\n\nPress F to open/close\nthe umbrella and reduce gravity's\n pull on you!";
+            }
+            else if(currentLevel == "Escher")
+            {
+                notificationText.text = "You've unlocked the stairs!\n\nPress F to spawn stairs that you\ncan climb on!";
+            }
+            else
+            {
+                notificationText.text = "You broke the game, congrats!";
+            }
+            
             Destroy(coll.gameObject);
         }
     }

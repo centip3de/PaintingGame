@@ -13,5 +13,9 @@ public class CreditsScroller : MonoBehaviour
         {
             creditsText.position = new Vector3(creditsText.position.x, creditsText.position.y + 1);
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>().loadMainMenu();
+        }
 	}
 }
